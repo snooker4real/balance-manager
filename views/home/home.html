@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8"/>
+
+    <title>Comptabilité Garage</title>
+
+    <link
+            href="../../node_modules/bootstrap/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+    />
+    <link
+            href="../../node_modules/@fortawesome/fontawesome-free/css/all.min.css"
+            rel="stylesheet"
+    />
+
+    <meta
+            http-equiv="Content-Security-Policy"
+            content="script-src 'self' 'unsafe-inline';"
+    />
+</head>
+<body>
+<!-- Page Content -->
+<div class="container-fluid">
+    <!-- Header Content -->
+    <div class="row">
+        <div class="col">
+            <h1 class="my-5 text-center">🧾🚗 Ma compta simplifiée ! 🚗🧾</h1>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="row mb-5">
+        <div class="col-5 mx-auto card shadow text-center py-3">
+            <div class="d-flex justify-content-around">
+                <i class="fas fa-credit-card"></i>
+                <h4>💲 DÉPENSES 💲</h4>
+                <i id="add-expense" class="fa-2x fas fa-plus-circle"></i>
+            </div>
+
+            <table class="table table-borderless">
+                <thead class="table-danger">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Intitulé</th>
+                    <th scope="col">Valeur</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="expenses-table"></tbody>
+            </table>
+        </div>
+        <div class="col-5 mx-auto card shadow text-center py-3">
+
+            <div class="d-flex justify-content-around">
+                <i class="fas fa-coins"></i>
+                <h4>💰 RECETTES 💰</h4>
+                <i id="add-profit" class="fa-2x fas fa-plus-circle"></i>
+            </div>
+
+            <table class="table table-borderless">
+                <thead class="table-success">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Intitulé</th>
+                    <th scope="col">Valeur</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="profits-table"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Footer Content -->
+    <div class="row">
+        <div class="col-4 mx-auto card shadow text-center py-3">
+            <h5>⚖ BILAN FINANCIER ⚖<i class="fas fa-receipt"></i></h5>
+            <div id="balance-sheet" class="text-white"></div>
+        </div>
+    </div>
+</div>
+<script>
+    window.controllers.loadController("home");
+</script>
+</body>
+</html>

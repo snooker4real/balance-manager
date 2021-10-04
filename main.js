@@ -136,6 +136,18 @@ ipcMain.on('open-edit-item-window', (e,data) => {
     editItemWindow.close();
     return;
   }
+
+  const selectedTab = data.type === 'expenses' ? expenses : profits;
+
+  for (let item of selectedTab){
+    if (item.id === data.id){
+      // Permet de supprimer un certain nombre d'élément
+      // à partir d'un index donné
+      editItemWindow = createWindow('edit-item',{item}, 1000,500)
+      // Slice permet d'extraire une partie d'un tableau
+      break;
+    }
+  }
   editItemWindow.on('close',() => {
     editItemWindow = null;
     // ipcMain.removeHandler('new-item');

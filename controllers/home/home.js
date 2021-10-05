@@ -1,6 +1,7 @@
 const {ipcRenderer} = require("electron");
 
 let cbEditedItem;
+let isEditionModeActivated = false; //Edition mode not activated by default
 
 function generateRowLine(tbodyId, data) {
     const tboby = document.querySelector("#" + tbodyId);
@@ -14,11 +15,14 @@ function generateRowLine(tbodyId, data) {
         const tdLabel = document.createElement("td");
 
         tdLabel.innerHTML = item.label;
+
         const tdValue = document.createElement("td");
 
         tdValue.innerHTML = item.value;
 
         const tdButtons = document.createElement("td");
+        tdButtons.hidden = !isEditionModeActivated;
+
         const editBtn = document.createElement("button");
         editBtn.innerText = "Modifier";
         editBtn.classList.add("btn", "btn-outline-warning", "mx-2");
@@ -118,8 +122,27 @@ function onClickAddNewItem(e) {
 document.querySelector("#add-expense").addEventListener('click', onClickAddNewItem)
 document.querySelector("#add-profit").addEventListener('click', onClickAddNewItem)
 
-////////////////////// Received //////////////////////////////
+/////////////////////////// Received ///////////////////////////////////
 ipcRenderer.on('new-item-added', (e, data) => {
     generateRowLine(`${data.type}s-table`, data.item);
     updateBalanceSheet(data.expenses, data.profits);
 })
+
+////////////////////////////// TOGGLE EDITION MODE LISTENER ///////////////////////////////
+ipcRenderer.on('toggle-edition-mode',() => {
+
+    isEditionModeActivated = !isEditionModeActivated;
+
+    const trTheads = document.querySelectorAll('thead tr');
+    trTheads[0].lastElementChild.hidden = !trTheads[0].lastElementChild.hidden;
+    trTheads[1].lastElementChild.hidden = !trTheads[1].lastElementChild.hidden;
+
+    const trTBody = document.querySelectorAll('tbody tr');
+    trTBody.forEach(tr => tr.lastElementChild.hidden = !tr.lastElementChild.hidden);
+
+
+    // Example if we assign a class to all element to hidden
+    // const elemsToHide = document.querySelectorAll('.action');
+    // elemsToHide.forEach(item => item.hidden = !item.hidden);
+
+});

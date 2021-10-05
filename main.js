@@ -1,34 +1,58 @@
-const { app, BrowserWindow, ipcMain, dialog, Menu } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog, Menu, Notification } = require("electron");
 const path = require("path");
+const Store = require('electron-store')
 
 let homeWindow;
 let newItemWindow;
 let editItemWindow;
 
-const expenses = [
-  {
-    id: 1,
-    label: "Achat huile moteur",
-    value: 450,
-  },
-  {
-    id: 2,
-    label: "Achat joint vidange",
-    value: 250,
-  },
-  {
-    id: 3,
-    label: "Achat filtre à huile",
-    value: 100,
-  },
-];
-const profits = [
-  {
-    id: 1,
-    label: "Vidange voiture",
-    value: 150,
-  },
-];
+// The constructor will try to fnd an existing DB or create a new one
+const store = new Store();
+
+//store.clear();
+
+let expenses = null;
+if (store.has('expenses')){
+  expenses = store.get('expenses');
+} else {
+  expenses = [
+    {
+      id: 1,
+      label: "Achat huile moteur",
+      value: 450,
+    },
+    {
+      id: 2,
+      label: "Achat joint vidange",
+      value: 250,
+    },
+    {
+      id: 3,
+      label: "Achat filtre à huile",
+      value: 100,
+    },
+  ];
+  store.set('expenses',expenses);
+}
+
+let profits = null;
+if (store.has('profits')){
+  profits = store.get('profits');
+} else {
+  profits = [
+    {
+      id: 1,
+      label: "Vidange voiture",
+      value: 150,
+    },
+    {
+      id: 2,
+      label: "Vente boutique",
+      value: 530,
+    }
+  ];
+  store.set('profits',profits);
+}
 
 function createWindow(viewName, dataToSend, width = 1400, height = 1200) {
   // Create the browser window
@@ -113,6 +137,8 @@ const openNewItemWindowCb = (e, data) => {
     // - Push the new item into the selected array
     selectedArray.push(newItem);
 
+    store.set(`${data.type}s`,selectedArray)
+
     // - Send the array to the home view
     homeWindow.send("new-item-added", {
       item: [newItem],
@@ -120,6 +146,12 @@ const openNewItemWindowCb = (e, data) => {
       expenses,
       profits,
     });
+
+    const notif = new Notification({
+      title: 'Nouvel Item',
+      body: `Element ${newItem.label} ajouté avec succès !`
+    });
+    notif.show();
 
     // - Send a response
     return "Item ajouté avec succès ✔️";
@@ -133,15 +165,15 @@ const openNewItemWindowCb = (e, data) => {
 
 ipcMain.on("open-new-item-window", openNewItemWindowCb);
 
-ipcMain.on("open-edit-item-window", (e, data) => {
+ipcMain.on("open-edit-item-window", (e, dataItem) => {
   if (editItemWindow) {
     editItemWindow.close();
   }
 
-  const selectedTab = data.type === "expenses" ? expenses : profits;
+  const selectedTab = dataItem.type === "expenses" ? expenses : profits;
 
   for (let [index, item] of selectedTab.entries()) {
-    if (item.id === data.id) {
+    if (item.id === dataItem.id) {
       // Permet de supprimer un certain nombre d'élément
       // à partir d'un index donné
       editItemWindow = createWindow("edit-item", { item }, 1000, 500);
@@ -151,13 +183,22 @@ ipcMain.on("open-edit-item-window", (e, data) => {
         selectedTab[index].label = data.label;
         selectedTab[index].value = data.value;
 
+        // Update the DB
+        store.set(dataItem.type, selectedTab);
+
         homeWindow.send("edited-item", {
           item: selectedTab[index],
           expenses,
           profits,
         });
 
-        return "Item modifié avec succès ✔️✔️";
+        const notif = new Notification({
+          title: 'Edit Item',
+          body: `Element ${item.label} édité avec succès !`
+        });
+        notif.show();
+
+        return "Item edité avec succès ✔️✔️";
       });
       break;
     }
@@ -184,6 +225,14 @@ ipcMain.handle("show-confirm-delete-item", (e, data) => {
         // Permet de supprimer un certain nombre d'élément
         // à partir d'un index donné
         selectedTab.splice(index, 1);
+        store.set(data.type, selectedTab);
+
+        const notif = new Notification({
+          title: 'Item supprimé',
+          body: `Element ${item.label} supprimé avec succès !`
+        });
+        notif.show();
+
         // Slice permet d'extraire une partie d'un tableau
         break;
       }

@@ -12,7 +12,7 @@ function onInputCheckValue(){
 }
 
 editItemLabelInput.addEventListener('input', onInputCheckValue)
-editItemValueInput.addEventListener('input',onInputCheckValue)
+editItemValueInput.addEventListener('input', onInputCheckValue)
 
 ////////////////////////// Init Data part ///////////////////////////
 ipcRenderer.on('init-data',(e, data) => {

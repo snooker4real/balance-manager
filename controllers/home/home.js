@@ -1,30 +1,47 @@
 const {ipcRenderer} = require("electron");
 
+let cbEditedItem;
+
 function generateRowLine(tbodyId, data) {
     const tboby = document.querySelector("#" + tbodyId);
     data.forEach((item) => {
         const tr = document.createElement("tr");
+
         const thId = document.createElement("th");
-
         thId.scope = "row";
+
         thId.innerHTML = item.id;
-
         const tdLabel = document.createElement("td");
-        tdLabel.innerHTML = item.label;
 
+        tdLabel.innerHTML = item.label;
         const tdValue = document.createElement("td");
+
         tdValue.innerHTML = item.value;
 
         const tdButtons = document.createElement("td");
-
         const editBtn = document.createElement("button");
         editBtn.innerText = "Modifier";
         editBtn.classList.add("btn", "btn-outline-warning", "mx-2");
         editBtn.addEventListener('click', () => {
+
             ipcRenderer.send('open-edit-item-window', {
                 id: item.id,
                 type: tbodyId.split('-')[0]
             });
+
+            // Delete the last cb know on the "edited-item" listener
+            if (cbEditedItem) {
+                ipcRenderer.removeListener('edited-item', cbEditedItem);
+                cbEditedItem = null;
+            }
+
+            ipcRenderer.on('edited-item',(e,data)=>{
+                tdLabel.innerText = data.item.label;
+                tdValue.innerText = data.item.value;
+
+                updateBalanceSheet(data.expenses, data.profits);
+            });
+
         });
 
 

@@ -134,17 +134,31 @@ ipcMain.on('open-new-item-window',(e,data) =>{
 ipcMain.on('open-edit-item-window', (e,data) => {
   if (editItemWindow){
     editItemWindow.close();
-    return;
   }
 
   const selectedTab = data.type === 'expenses' ? expenses : profits;
 
-  for (let item of selectedTab){
+  for (let [index,item] of selectedTab.entries()){
     if (item.id === data.id){
       // Permet de supprimer un certain nombre d'élément
       // à partir d'un index donné
-      editItemWindow = createWindow('edit-item',{item}, 1000,500)
+      editItemWindow = createWindow('edit-item',{item}, 1000,500);
       // Slice permet d'extraire une partie d'un tableau
+      ipcMain.handle('edit-item',(e,data) =>{
+
+        // Update
+        selectedTab[index].label = data.label;
+        selectedTab[index].value = data.value;
+
+        homeWindow.send('edited-item',{
+          item: selectedTab[index],
+          expenses,
+          profits
+        })
+
+        return 'Item modifié avec succès ✔️✔️';
+
+      });
       break;
     }
   }

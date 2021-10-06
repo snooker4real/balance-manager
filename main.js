@@ -6,7 +6,7 @@ let homeWindow;
 let newItemWindow;
 let editItemWindow;
 
-// The constructor will try to fnd an existing DB or create a new one
+// The constructor will try to find an existing DB or create a new one (for persistence)
 const store = new Store();
 
 //store.clear();

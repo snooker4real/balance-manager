@@ -289,3 +289,6 @@ const menuConfig = [
 
 const menu = Menu.buildFromTemplate(menuConfig); // Transforme le menu en objet
 Menu.setApplicationMenu(menu); // Apply the menu to the app
+
+// For win notifications
+if(process.platform === 'win32') app.setAppUserModelId('Comptabilité Garage')

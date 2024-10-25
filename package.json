@@ -14,7 +14,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
     "bootstrap": "^5.1.2",
-    "electron": "^20.3.12",
+    "electron": "^31.7.2",
     "electron-store": "^8.0.1"
   },
   "devDependencies": {

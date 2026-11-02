@@ -1,8 +1,24 @@
 # balance-manager
+
 edit bouton à ajouter
 
-Don't forget to install NodeJS in this project at the root
+**Stack** : Electron
+
+## Démarrage
+
+```bash
+npm install   # installer les dépendances
+npm start   # démarrer
+npm run build   # construire
+npm test   # tests
+```
+
+## Structure
 
 ```
-npm i --save electron bootstrap @fortawesome/fontawesome-free
+controllers/
+views/
+main.js
+package.json
+preload.js
 ```

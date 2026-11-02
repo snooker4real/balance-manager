@@ -14,10 +14,10 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
     "bootstrap": "^5.1.2",
-    "electron": "^20.3.12",
-    "electron-store": "^8.0.1"
+    "electron": "^45.2.1",
+    "electron-store": "^8.2.0"
   },
   "devDependencies": {
-    "electron-packager": "^15.4.0"
+    "@electron/packager": "^20.3.0"
   }
 }
